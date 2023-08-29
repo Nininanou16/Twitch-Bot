@@ -1,4 +1,5 @@
 require('dotenv').config();
+const settings = require('./settings.json')
 const {Client} = require('tmi.js');
 const client = new Client({
     options: { debug: true },
@@ -6,7 +7,7 @@ const client = new Client({
         username: process.env.USERNAME,
         password: process.env.TOKEN
     },
-    channels: ['nininanou16']
+    channels: settings.channels
 });
 const commands = new Map();
 let lastUse = new Map();
@@ -16,8 +17,14 @@ client.connect().catch((error) => {
     console.log(error);
 });
 
+setInterval(() => {
+    let random = Math.round(Math.random() * settings.announcements.length)
+    client.say(settings.channels[0], settings.announcements[random - 1])
+}, settings.announcementsInterval*1000)
+
 client.on('message', (channel, tags, message, self) => {
     // if (self) return;
+    console.log(channel)
 
     if (message.toLowerCase().startsWith('!')) {
         let args = message.toLowerCase().split(/^\s+$/);

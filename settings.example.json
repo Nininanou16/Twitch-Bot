@@ -1,0 +1,10 @@
+{
+    "channels":["channel name"],
+    "announcements":[
+        "Announcement 1",
+        "Announcement 2",
+        "Announcement 3",
+        "Announcement 4"
+    ],
+    "announcementsInterval":"300"
+}
