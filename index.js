@@ -8,9 +8,7 @@ const client = new Client({
     },
     channels: ['nininanou16']
 });
-console.log(client.timeout)
 const commands = new Map();
-// lastUse<map> { command: { general: XXX, }}
 let lastUse = new Map();
 require('./handler.js')(commands)
 
@@ -21,15 +19,14 @@ client.connect().catch((error) => {
 client.on('message', (channel, tags, message, self) => {
     // if (self) return;
 
-    // console.log(tags)
     if (message.toLowerCase().startsWith('!')) {
         let args = message.toLowerCase().split(/^\s+$/);
         let cmdName = args[0];
         let command = commands.get(cmdName);
         if (command) {
             // check permission
-            if (command.modOnly && (!tags.mod && tags.badges?.broadcaster != 1)) return console.log('utilisateur non modérateur');
-            if (command.subOnly && !tags.subscriber) return console.log('utilisateur non abonné');
+            if (command.modOnly && (!tags.mod && tags.badges?.broadcaster != 1)) return;
+            if (command.subOnly && !tags.subscriber) return;
 
             // check cooldown
             let cooldown = lastUse.get(cmdName);
@@ -37,10 +34,9 @@ client.on('message', (channel, tags, message, self) => {
                 lastUse.set(cmdName, {});
                 cooldown = lastUse.get(cmdName)
             }
-            console.log(cooldown)
             if (command.cooldown?.user > 0 && command.cooldown?.general > 0) {
-                    if ((Date.now() - cooldown[tags.username]) < (command.cooldown.user*1000)) return console.log('Cooldown utilisateur non écoulé');
-                    if ((Date.now() - cooldown.general) < (command.cooldown.general*1000)) return console.log('Cooldown general non écoulé');
+                    if ((Date.now() - cooldown[tags.username]) < (command.cooldown.user*1000)) return;
+                    if ((Date.now() - cooldown.general) < (command.cooldown.general*1000)) return;
             }
             command.run(client, channel, tags, message, self);
             if (command.cooldown?.user > 0 && command.cooldown?.general > 0) {

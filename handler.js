@@ -3,7 +3,6 @@ const {readdir} = require('node:fs/promises')
 module.exports = async (commands) => {
     try {
         const commandList = await readdir('./Commands')
-        console.log(commandList)
         for (const command of commandList) {
             if (command.toString().endsWith('.js')) {
                 let cmdInfo = require(`./Commands/${command}`)
