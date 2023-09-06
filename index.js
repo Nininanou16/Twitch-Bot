@@ -1,28 +1,28 @@
 require('dotenv').config();
 const settings = require('./settings.json')
-const {Client} = require('tmi.js');
-const client = new Client({
+const {twitchClient} = require('tmi.js');
+const twitchClient = new twitchClient({
     options: { debug: true },
     identity: {
-        username: process.env.USERNAME,
-        password: process.env.TOKEN
+        username: process.env.TWITCH_USERNAME,
+        password: process.env.TWITCH_TOKEN
     },
     channels: settings.channels
 });
-const commands = new Map();
+const twitchCommands = new Map();
 let lastUse = new Map();
-require('./handler.js')(commands)
+require('./handler.js')(twitchCommands)
 
-client.connect().catch((error) => {
+twitchClient.connect().catch((error) => {
     console.log(error);
 });
 
 setInterval(() => {
     let random = Math.round(Math.random() * settings.announcements.length)
-    client.say(settings.channels[0], settings.announcements[random - 1])
+    twitchClient.say(settings.channels[0], settings.announcements[random - 1])
 }, settings.announcementsInterval*1000)
 
-client.on('message', (channel, tags, message, self) => {
+twitchClient.on('message', (channel, tags, message, self) => {
     // if (self) return;
     console.log(channel)
 
@@ -45,7 +45,7 @@ client.on('message', (channel, tags, message, self) => {
                     if ((Date.now() - cooldown[tags.username]) < (command.cooldown.user*1000)) return;
                     if ((Date.now() - cooldown.general) < (command.cooldown.general*1000)) return;
             }
-            command.run(client, channel, tags, message, self);
+            command.run(twitchClient, channel, tags, message, self);
             if (command.cooldown?.user > 0 && command.cooldown?.general > 0) {
                 cooldown.general = Date.now();
                 cooldown[tags.username] = Date.now()
