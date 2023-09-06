@@ -1,13 +1,13 @@
 const {readdir} = require('node:fs/promises')
 
-module.exports = async (commands) => {
+module.exports = async (twitchCommands) => {
     try {
-        const commandList = await readdir('./Commands')
+        const commandList = await readdir('./TwitchCommands')
         for (const command of commandList) {
             if (command.toString().endsWith('.js')) {
-                let cmdInfo = require(`./Commands/${command}`)
+                let cmdInfo = require(`./TwitchCommands/${command}`)
                 if (cmdInfo) {
-                    commands.set(`!${command.split('.')[0]}`, cmdInfo)
+                    twitchCommands.set(`!${command.split('.')[0]}`, cmdInfo)
                 }
             }
         }

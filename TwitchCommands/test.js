@@ -5,7 +5,7 @@ module.exports = {
         user: 20,
         general: 10
     },
-    run: (Client, channel, tags, message, self) => {
-        Client.say(channel, "Test OK")
+    run: (twitchClient, channel, tags, message, self) => {
+        twitchClient.say(channel, "Test OK")
     }
 }
